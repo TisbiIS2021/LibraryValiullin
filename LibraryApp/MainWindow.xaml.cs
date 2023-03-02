@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using LibraryApp.View;
 
 namespace LibraryApp
 {
@@ -23,6 +24,7 @@ namespace LibraryApp
         public MainWindow()
         {
             InitializeComponent();
+            MWFrame.Navigate(new AuthView());
         }
     }
 }
