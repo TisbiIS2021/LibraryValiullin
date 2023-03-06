@@ -6,7 +6,8 @@
       xmlns:local="clr-namespace:LibraryApp.View"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="ReaderPage">
+      Title="ReaderPage"
+      Loaded="Page_Loaded">
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -14,7 +15,62 @@
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
         <StackPanel>
-            
+            <DataGrid x:Name="BuscketDg"
+                      ColumnWidth="*">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Binding="{Binding Name}"/>
+                </DataGrid.Columns>
+                <Button Content="Issue Books"
+                        x:Name="IssueBooksBtn"
+                        Click="IssueBooksBtn_Click"/>
+                <Button Content="Delete from Buscket"
+                        x:Name="DeleteFromBuscketBtn"
+                        Click="DeleteFromBuscketBtn_Click"/>
+            </DataGrid>
         </StackPanel>
+        <DockPanel Grid.Column="1">
+            <WrapPanel DockPanel.Dock="Top" Height="50">
+                <TextBlock Text="Search by book name"/>
+                <TextBox x:Name="SearchTb" 
+                         TextChanged="SearchTb_TextChanged"
+                         Width="100"/>
+                <TextBlock Text="Genre search"/>
+                <ComboBox x:Name="GenreCb"
+                          Width="100"/>
+                <Button Content="Drop filters" 
+                        x:Name="DropFilterBtn"
+                        Click="DropFilterBtn_Click"/>
+            </WrapPanel>
+            <ListView x:Name="BookLV"
+                      MouseRightButtonDown="BookLV_MouseRightButtonDown">
+                <ListView.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel/>
+                    </ItemsPanelTemplate>
+                </ListView.ItemsPanel>
+                <ListView.ItemTemplate >
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding Name}"/>
+                            <WrapPanel>
+                                <TextBlock Text="Genre:"/>
+                                <TextBlock Text="{Binding Genre.Name}"/>
+                            </WrapPanel>
+                            <WrapPanel>
+                                <TextBlock Text="Publisher:"/>
+                                <TextBlock Text="{Binding Publisher.Name}"/>
+                            </WrapPanel>
+                            <ItemsControl ItemsSource="{Binding BookAuthor}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Author.Name}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </DockPanel>
     </Grid>
 </Page>

@@ -15,5 +15,7 @@ namespace LibraryApp
     public partial class App : Application
     {
         public static ValiullinLibraryEntities libraryEntities = new ValiullinLibraryEntities();
+        public static Reader loggedReader = new Reader();
+        public static Employee LoggedEmployee = new Employee();
     }
 }

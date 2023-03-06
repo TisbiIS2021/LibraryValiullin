@@ -33,6 +33,7 @@ namespace LibraryApp.View
 
             if (reader != null)
             {
+                App.loggedReader = reader;
                 MessageBox.Show("Succsesfull authorisation,\u5350" + reader.Name);
                 NavigationService.Navigate(new ReaderPage());
             }
@@ -41,6 +42,7 @@ namespace LibraryApp.View
 
             if (staff != null)
             {
+                App.LoggedEmployee = staff;
                 switch (staff.PositionId)
                 {
                     case (1):

@@ -17,7 +17,9 @@
         <Border Grid.Column="1"
                 VerticalAlignment="Center">
             <StackPanel>
-                <Label HorizontalContentAlignment="Center"/>
+                <Label HorizontalContentAlignment="Center"
+                       Content="PhoneNumber"
+                       VerticalContentAlignment="Center"/>
                 <TextBox x:Name="LoginTb"
                          />
                 <Button Content="Log in"
