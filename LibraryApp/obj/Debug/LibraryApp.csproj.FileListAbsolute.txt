@@ -24,3 +24,5 @@ Y:\Валиуллин Эмиль\Library\LibraryValiullin\LibraryApp\obj\Debug\L
 Y:\Валиуллин Эмиль\Library\LibraryValiullin\LibraryApp\obj\Debug\LibraryApp.exe
 Y:\Валиуллин Эмиль\Library\LibraryValiullin\LibraryApp\obj\Debug\LibraryApp.pdb
 Y:\Валиуллин Эмиль\Library\LibraryValiullin\LibraryApp\obj\Debug\LibraryApp.csproj.AssemblyReference.cache
+Y:\Валиуллин Эмиль\Library\LibraryValiullin\LibraryApp\obj\Debug\View\IssueHistoryView.g.cs
+Y:\Валиуллин Эмиль\Library\LibraryValiullin\LibraryApp\obj\Debug\View\IssueHistoryView.baml

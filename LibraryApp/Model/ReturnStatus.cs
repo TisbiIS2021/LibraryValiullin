@@ -12,19 +12,18 @@ namespace LibraryApp.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class BookIssue
+    public partial class ReturnStatus
     {
-        public int ID { get; set; }
-        public Nullable<System.DateTime> IssueDate { get; set; }
-        public Nullable<System.DateTime> ReturnDate { get; set; }
-        public Nullable<int> ReaderID { get; set; }
-        public Nullable<int> BookId { get; set; }
-        public Nullable<int> EmployeeId { get; set; }
-        public Nullable<int> StatusId { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public ReturnStatus()
+        {
+            this.BookIssue = new HashSet<BookIssue>();
+        }
     
-        public virtual Book Book { get; set; }
-        public virtual Employee Employee { get; set; }
-        public virtual Reader Reader { get; set; }
-        public virtual ReturnStatus ReturnStatus { get; set; }
+        public int id { get; set; }
+        public string Name { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<BookIssue> BookIssue { get; set; }
     }
 }

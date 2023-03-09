@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="Хранилище ValiullinLibraryModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="Хранилище ValiullinLibraryModel" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Author">
           <Key>
             <PropertyRef Name="ID" />
@@ -40,6 +40,7 @@
           <Property Name="ReaderID" Type="int" />
           <Property Name="BookId" Type="int" />
           <Property Name="EmployeeId" Type="int" />
+          <Property Name="StatusId" Type="int" />
         </EntityType>
         <EntityType Name="Employee">
           <Key>
@@ -72,7 +73,7 @@
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Name" Type="nchar" MaxLength="10" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Reader">
           <Key>
@@ -83,6 +84,13 @@
           <Property Name="Adress" Type="nvarchar" MaxLength="50" />
           <Property Name="PnoneNumber" Type="nvarchar" MaxLength="11" />
           <Property Name="DateOfBirth" Type="date" />
+        </EntityType>
+        <EntityType Name="ReturnStatus">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -178,6 +186,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_BookIssue_ReturnStatus">
+          <End Role="ReturnStatus" Type="Self.ReturnStatus" Multiplicity="0..1" />
+          <End Role="BookIssue" Type="Self.BookIssue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ReturnStatus">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="BookIssue">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Employee_Position">
           <End Role="Position" Type="Self.Position" Multiplicity="1" />
           <End Role="Employee" Type="Self.Employee" Multiplicity="*" />
@@ -200,6 +220,7 @@
           <EntitySet Name="Position" EntityType="Self.Position" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Publisher" EntityType="Self.Publisher" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Reader" EntityType="Self.Reader" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ReturnStatus" EntityType="Self.ReturnStatus" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_Book_Genre" Association="Self.FK_Book_Genre">
             <End Role="Genre" EntitySet="Genre" />
@@ -229,23 +250,75 @@
             <End Role="Reader" EntitySet="Reader" />
             <End Role="BookIssue" EntitySet="BookIssue" />
           </AssociationSet>
+          <AssociationSet Name="FK_BookIssue_ReturnStatus" Association="Self.FK_BookIssue_ReturnStatus">
+            <End Role="ReturnStatus" EntitySet="ReturnStatus" />
+            <End Role="BookIssue" EntitySet="BookIssue" />
+          </AssociationSet>
           <AssociationSet Name="FK_Employee_Position" Association="Self.FK_Employee_Position">
             <End Role="Position" EntitySet="Position" />
             <End Role="Employee" EntitySet="Employee" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ValiullinLibraryModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="ValiullinLibraryEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Author" EntityType="ValiullinLibraryModel.Author" />
+          <EntitySet Name="Book" EntityType="ValiullinLibraryModel.Book" />
+          <EntitySet Name="BookAuthor" EntityType="ValiullinLibraryModel.BookAuthor" />
+          <EntitySet Name="BookIssue" EntityType="ValiullinLibraryModel.BookIssue" />
+          <EntitySet Name="Employee" EntityType="ValiullinLibraryModel.Employee" />
+          <EntitySet Name="Genre" EntityType="ValiullinLibraryModel.Genre" />
+          <EntitySet Name="Position" EntityType="ValiullinLibraryModel.Position" />
+          <EntitySet Name="Publisher" EntityType="ValiullinLibraryModel.Publisher" />
+          <EntitySet Name="Reader" EntityType="ValiullinLibraryModel.Reader" />
+          <EntitySet Name="ReturnStatus" EntityType="ValiullinLibraryModel.ReturnStatus" />
+          <EntitySet Name="sysdiagrams" EntityType="ValiullinLibraryModel.sysdiagrams" />
+          <AssociationSet Name="FK_BookAuthor_Author" Association="ValiullinLibraryModel.FK_BookAuthor_Author">
+            <End Role="Author" EntitySet="Author" />
+            <End Role="BookAuthor" EntitySet="BookAuthor" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Book_Genre" Association="ValiullinLibraryModel.FK_Book_Genre">
+            <End Role="Genre" EntitySet="Genre" />
+            <End Role="Book" EntitySet="Book" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Book_Publisher" Association="ValiullinLibraryModel.FK_Book_Publisher">
+            <End Role="Publisher" EntitySet="Publisher" />
+            <End Role="Book" EntitySet="Book" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BookAuthor_Book" Association="ValiullinLibraryModel.FK_BookAuthor_Book">
+            <End Role="Book" EntitySet="Book" />
+            <End Role="BookAuthor" EntitySet="BookAuthor" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BookIssue_Book" Association="ValiullinLibraryModel.FK_BookIssue_Book">
+            <End Role="Book" EntitySet="Book" />
+            <End Role="BookIssue" EntitySet="BookIssue" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BookIssue_Employee" Association="ValiullinLibraryModel.FK_BookIssue_Employee">
+            <End Role="Employee" EntitySet="Employee" />
+            <End Role="BookIssue" EntitySet="BookIssue" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BookIssue_Reader" Association="ValiullinLibraryModel.FK_BookIssue_Reader">
+            <End Role="Reader" EntitySet="Reader" />
+            <End Role="BookIssue" EntitySet="BookIssue" />
+          </AssociationSet>
+          <AssociationSet Name="FK_BookIssue_ReturnStatus" Association="ValiullinLibraryModel.FK_BookIssue_ReturnStatus">
+            <End Role="ReturnStatus" EntitySet="ReturnStatus" />
+            <End Role="BookIssue" EntitySet="BookIssue" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Employee_Position" Association="ValiullinLibraryModel.FK_Employee_Position">
+            <End Role="Position" EntitySet="Position" />
+            <End Role="Employee" EntitySet="Employee" />
+          </AssociationSet>
+        </EntityContainer>
         <EntityType Name="Author">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="BookAuthor" Relationship="Self.FK_BookAuthor_Author" FromRole="Author" ToRole="BookAuthor" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="BookAuthor" Relationship="ValiullinLibraryModel.FK_BookAuthor_Author" FromRole="Author" ToRole="BookAuthor" />
         </EntityType>
         <EntityType Name="Book">
           <Key>
@@ -253,13 +326,13 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="DatePublished" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="GenreId" Type="Int32" Nullable="false" />
           <Property Name="PubliserId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Genre" Relationship="Self.FK_Book_Genre" FromRole="Book" ToRole="Genre" />
-          <NavigationProperty Name="Publisher" Relationship="Self.FK_Book_Publisher" FromRole="Book" ToRole="Publisher" />
-          <NavigationProperty Name="BookAuthor" Relationship="Self.FK_BookAuthor_Book" FromRole="Book" ToRole="BookAuthor" />
-          <NavigationProperty Name="BookIssue" Relationship="Self.FK_BookIssue_Book" FromRole="Book" ToRole="BookIssue" />
+          <NavigationProperty Name="Genre" Relationship="ValiullinLibraryModel.FK_Book_Genre" FromRole="Book" ToRole="Genre" />
+          <NavigationProperty Name="Publisher" Relationship="ValiullinLibraryModel.FK_Book_Publisher" FromRole="Book" ToRole="Publisher" />
+          <NavigationProperty Name="BookAuthor" Relationship="ValiullinLibraryModel.FK_BookAuthor_Book" FromRole="Book" ToRole="BookAuthor" />
+          <NavigationProperty Name="BookIssue" Relationship="ValiullinLibraryModel.FK_BookIssue_Book" FromRole="Book" ToRole="BookIssue" />
         </EntityType>
         <EntityType Name="BookAuthor">
           <Key>
@@ -268,8 +341,8 @@
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="BookID" Type="Int32" Nullable="false" />
           <Property Name="AuthorId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Author" Relationship="Self.FK_BookAuthor_Author" FromRole="BookAuthor" ToRole="Author" />
-          <NavigationProperty Name="Book" Relationship="Self.FK_BookAuthor_Book" FromRole="BookAuthor" ToRole="Book" />
+          <NavigationProperty Name="Author" Relationship="ValiullinLibraryModel.FK_BookAuthor_Author" FromRole="BookAuthor" ToRole="Author" />
+          <NavigationProperty Name="Book" Relationship="ValiullinLibraryModel.FK_BookAuthor_Book" FromRole="BookAuthor" ToRole="Book" />
         </EntityType>
         <EntityType Name="BookIssue">
           <Key>
@@ -281,23 +354,25 @@
           <Property Name="ReaderID" Type="Int32" />
           <Property Name="BookId" Type="Int32" />
           <Property Name="EmployeeId" Type="Int32" />
-          <NavigationProperty Name="Book" Relationship="Self.FK_BookIssue_Book" FromRole="BookIssue" ToRole="Book" />
-          <NavigationProperty Name="Employee" Relationship="Self.FK_BookIssue_Employee" FromRole="BookIssue" ToRole="Employee" />
-          <NavigationProperty Name="Reader" Relationship="Self.FK_BookIssue_Reader" FromRole="BookIssue" ToRole="Reader" />
+          <Property Name="StatusId" Type="Int32" />
+          <NavigationProperty Name="Book" Relationship="ValiullinLibraryModel.FK_BookIssue_Book" FromRole="BookIssue" ToRole="Book" />
+          <NavigationProperty Name="Employee" Relationship="ValiullinLibraryModel.FK_BookIssue_Employee" FromRole="BookIssue" ToRole="Employee" />
+          <NavigationProperty Name="Reader" Relationship="ValiullinLibraryModel.FK_BookIssue_Reader" FromRole="BookIssue" ToRole="Reader" />
+          <NavigationProperty Name="ReturnStatus" Relationship="ValiullinLibraryModel.FK_BookIssue_ReturnStatus" FromRole="BookIssue" ToRole="ReturnStatus" />
         </EntityType>
         <EntityType Name="Employee">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Surname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Patronymic" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Surname" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Patronymic" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PositionId" Type="Int32" Nullable="false" />
           <Property Name="DateOfBirth" Type="DateTime" Nullable="false" Precision="0" />
-          <Property Name="PhoneNumber" Type="String" MaxLength="11" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="BookIssue" Relationship="Self.FK_BookIssue_Employee" FromRole="Employee" ToRole="BookIssue" />
-          <NavigationProperty Name="Position" Relationship="Self.FK_Employee_Position" FromRole="Employee" ToRole="Position" />
+          <Property Name="PhoneNumber" Type="String" Nullable="false" MaxLength="11" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="BookIssue" Relationship="ValiullinLibraryModel.FK_BookIssue_Employee" FromRole="Employee" ToRole="BookIssue" />
+          <NavigationProperty Name="Position" Relationship="ValiullinLibraryModel.FK_Employee_Position" FromRole="Employee" ToRole="Position" />
         </EntityType>
         <EntityType Name="Genre">
           <Key>
@@ -305,7 +380,7 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Book" Relationship="Self.FK_Book_Genre" FromRole="Genre" ToRole="Book" />
+          <NavigationProperty Name="Book" Relationship="ValiullinLibraryModel.FK_Book_Genre" FromRole="Genre" ToRole="Book" />
         </EntityType>
         <EntityType Name="Position">
           <Key>
@@ -313,15 +388,15 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Employee" Relationship="Self.FK_Employee_Position" FromRole="Position" ToRole="Employee" />
+          <NavigationProperty Name="Employee" Relationship="ValiullinLibraryModel.FK_Employee_Position" FromRole="Position" ToRole="Employee" />
         </EntityType>
         <EntityType Name="Publisher">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
-          <NavigationProperty Name="Book" Relationship="Self.FK_Book_Publisher" FromRole="Publisher" ToRole="Book" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Book" Relationship="ValiullinLibraryModel.FK_Book_Publisher" FromRole="Publisher" ToRole="Book" />
         </EntityType>
         <EntityType Name="Reader">
           <Key>
@@ -332,21 +407,29 @@
           <Property Name="Adress" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="PnoneNumber" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
           <Property Name="DateOfBirth" Type="DateTime" Precision="0" />
-          <NavigationProperty Name="BookIssue" Relationship="Self.FK_BookIssue_Reader" FromRole="Reader" ToRole="BookIssue" />
+          <NavigationProperty Name="BookIssue" Relationship="ValiullinLibraryModel.FK_BookIssue_Reader" FromRole="Reader" ToRole="BookIssue" />
+        </EntityType>
+        <EntityType Name="ReturnStatus">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="BookIssue" Relationship="ValiullinLibraryModel.FK_BookIssue_ReturnStatus" FromRole="ReturnStatus" ToRole="BookIssue" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
             <PropertyRef Name="diagram_id" />
           </Key>
-          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="principal_id" Type="Int32" Nullable="false" />
           <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="version" Type="Int32" />
           <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
         <Association Name="FK_BookAuthor_Author">
-          <End Role="Author" Type="Self.Author" Multiplicity="1" />
-          <End Role="BookAuthor" Type="Self.BookAuthor" Multiplicity="*" />
+          <End Type="ValiullinLibraryModel.Author" Role="Author" Multiplicity="1" />
+          <End Type="ValiullinLibraryModel.BookAuthor" Role="BookAuthor" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Author">
               <PropertyRef Name="ID" />
@@ -357,8 +440,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Book_Genre">
-          <End Role="Genre" Type="Self.Genre" Multiplicity="1" />
-          <End Role="Book" Type="Self.Book" Multiplicity="*" />
+          <End Type="ValiullinLibraryModel.Genre" Role="Genre" Multiplicity="1" />
+          <End Type="ValiullinLibraryModel.Book" Role="Book" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Genre">
               <PropertyRef Name="ID" />
@@ -369,8 +452,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Book_Publisher">
-          <End Role="Publisher" Type="Self.Publisher" Multiplicity="1" />
-          <End Role="Book" Type="Self.Book" Multiplicity="*" />
+          <End Type="ValiullinLibraryModel.Publisher" Role="Publisher" Multiplicity="1" />
+          <End Type="ValiullinLibraryModel.Book" Role="Book" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Publisher">
               <PropertyRef Name="ID" />
@@ -381,8 +464,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_BookAuthor_Book">
-          <End Role="Book" Type="Self.Book" Multiplicity="1" />
-          <End Role="BookAuthor" Type="Self.BookAuthor" Multiplicity="*" />
+          <End Type="ValiullinLibraryModel.Book" Role="Book" Multiplicity="1" />
+          <End Type="ValiullinLibraryModel.BookAuthor" Role="BookAuthor" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Book">
               <PropertyRef Name="ID" />
@@ -393,8 +476,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_BookIssue_Book">
-          <End Role="Book" Type="Self.Book" Multiplicity="0..1" />
-          <End Role="BookIssue" Type="Self.BookIssue" Multiplicity="*" />
+          <End Type="ValiullinLibraryModel.Book" Role="Book" Multiplicity="0..1" />
+          <End Type="ValiullinLibraryModel.BookIssue" Role="BookIssue" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Book">
               <PropertyRef Name="ID" />
@@ -405,8 +488,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_BookIssue_Employee">
-          <End Role="Employee" Type="Self.Employee" Multiplicity="0..1" />
-          <End Role="BookIssue" Type="Self.BookIssue" Multiplicity="*" />
+          <End Type="ValiullinLibraryModel.Employee" Role="Employee" Multiplicity="0..1" />
+          <End Type="ValiullinLibraryModel.BookIssue" Role="BookIssue" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Employee">
               <PropertyRef Name="ID" />
@@ -417,8 +500,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_BookIssue_Reader">
-          <End Role="Reader" Type="Self.Reader" Multiplicity="0..1" />
-          <End Role="BookIssue" Type="Self.BookIssue" Multiplicity="*" />
+          <End Type="ValiullinLibraryModel.Reader" Role="Reader" Multiplicity="0..1" />
+          <End Type="ValiullinLibraryModel.BookIssue" Role="BookIssue" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Reader">
               <PropertyRef Name="ID" />
@@ -428,9 +511,21 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_BookIssue_ReturnStatus">
+          <End Type="ValiullinLibraryModel.ReturnStatus" Role="ReturnStatus" Multiplicity="0..1" />
+          <End Type="ValiullinLibraryModel.BookIssue" Role="BookIssue" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ReturnStatus">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="BookIssue">
+              <PropertyRef Name="StatusId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Employee_Position">
-          <End Role="Position" Type="Self.Position" Multiplicity="1" />
-          <End Role="Employee" Type="Self.Employee" Multiplicity="*" />
+          <End Type="ValiullinLibraryModel.Position" Role="Position" Multiplicity="1" />
+          <End Type="ValiullinLibraryModel.Employee" Role="Employee" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Position">
               <PropertyRef Name="ID" />
@@ -440,51 +535,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="ValiullinLibraryEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Author" EntityType="Self.Author" />
-          <EntitySet Name="Book" EntityType="Self.Book" />
-          <EntitySet Name="BookAuthor" EntityType="Self.BookAuthor" />
-          <EntitySet Name="BookIssue" EntityType="Self.BookIssue" />
-          <EntitySet Name="Employee" EntityType="Self.Employee" />
-          <EntitySet Name="Genre" EntityType="Self.Genre" />
-          <EntitySet Name="Position" EntityType="Self.Position" />
-          <EntitySet Name="Publisher" EntityType="Self.Publisher" />
-          <EntitySet Name="Reader" EntityType="Self.Reader" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
-          <AssociationSet Name="FK_BookAuthor_Author" Association="Self.FK_BookAuthor_Author">
-            <End Role="Author" EntitySet="Author" />
-            <End Role="BookAuthor" EntitySet="BookAuthor" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Book_Genre" Association="Self.FK_Book_Genre">
-            <End Role="Genre" EntitySet="Genre" />
-            <End Role="Book" EntitySet="Book" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Book_Publisher" Association="Self.FK_Book_Publisher">
-            <End Role="Publisher" EntitySet="Publisher" />
-            <End Role="Book" EntitySet="Book" />
-          </AssociationSet>
-          <AssociationSet Name="FK_BookAuthor_Book" Association="Self.FK_BookAuthor_Book">
-            <End Role="Book" EntitySet="Book" />
-            <End Role="BookAuthor" EntitySet="BookAuthor" />
-          </AssociationSet>
-          <AssociationSet Name="FK_BookIssue_Book" Association="Self.FK_BookIssue_Book">
-            <End Role="Book" EntitySet="Book" />
-            <End Role="BookIssue" EntitySet="BookIssue" />
-          </AssociationSet>
-          <AssociationSet Name="FK_BookIssue_Employee" Association="Self.FK_BookIssue_Employee">
-            <End Role="Employee" EntitySet="Employee" />
-            <End Role="BookIssue" EntitySet="BookIssue" />
-          </AssociationSet>
-          <AssociationSet Name="FK_BookIssue_Reader" Association="Self.FK_BookIssue_Reader">
-            <End Role="Reader" EntitySet="Reader" />
-            <End Role="BookIssue" EntitySet="BookIssue" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Employee_Position" Association="Self.FK_Employee_Position">
-            <End Role="Position" EntitySet="Position" />
-            <End Role="Employee" EntitySet="Employee" />
-          </AssociationSet>
-        </EntityContainer>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -493,99 +544,108 @@
           <EntitySetMapping Name="Author">
             <EntityTypeMapping TypeName="ValiullinLibraryModel.Author">
               <MappingFragment StoreEntitySet="Author">
-                <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Book">
             <EntityTypeMapping TypeName="ValiullinLibraryModel.Book">
               <MappingFragment StoreEntitySet="Book">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="DatePublished" ColumnName="DatePublished" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="GenreId" ColumnName="GenreId" />
                 <ScalarProperty Name="PubliserId" ColumnName="PubliserId" />
+                <ScalarProperty Name="GenreId" ColumnName="GenreId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="DatePublished" ColumnName="DatePublished" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="BookAuthor">
             <EntityTypeMapping TypeName="ValiullinLibraryModel.BookAuthor">
               <MappingFragment StoreEntitySet="BookAuthor">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="BookID" ColumnName="BookID" />
                 <ScalarProperty Name="AuthorId" ColumnName="AuthorId" />
+                <ScalarProperty Name="BookID" ColumnName="BookID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="BookIssue">
             <EntityTypeMapping TypeName="ValiullinLibraryModel.BookIssue">
               <MappingFragment StoreEntitySet="BookIssue">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="IssueDate" ColumnName="IssueDate" />
-                <ScalarProperty Name="ReturnDate" ColumnName="ReturnDate" />
-                <ScalarProperty Name="ReaderID" ColumnName="ReaderID" />
-                <ScalarProperty Name="BookId" ColumnName="BookId" />
+                <ScalarProperty Name="StatusId" ColumnName="StatusId" />
                 <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
+                <ScalarProperty Name="BookId" ColumnName="BookId" />
+                <ScalarProperty Name="ReaderID" ColumnName="ReaderID" />
+                <ScalarProperty Name="ReturnDate" ColumnName="ReturnDate" />
+                <ScalarProperty Name="IssueDate" ColumnName="IssueDate" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Employee">
             <EntityTypeMapping TypeName="ValiullinLibraryModel.Employee">
               <MappingFragment StoreEntitySet="Employee">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Surname" ColumnName="Surname" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Patronymic" ColumnName="Patronymic" />
-                <ScalarProperty Name="PositionId" ColumnName="PositionId" />
-                <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
                 <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
+                <ScalarProperty Name="PositionId" ColumnName="PositionId" />
+                <ScalarProperty Name="Patronymic" ColumnName="Patronymic" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Surname" ColumnName="Surname" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Genre">
             <EntityTypeMapping TypeName="ValiullinLibraryModel.Genre">
               <MappingFragment StoreEntitySet="Genre">
-                <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Position">
             <EntityTypeMapping TypeName="ValiullinLibraryModel.Position">
               <MappingFragment StoreEntitySet="Position">
-                <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Publisher">
             <EntityTypeMapping TypeName="ValiullinLibraryModel.Publisher">
               <MappingFragment StoreEntitySet="Publisher">
-                <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Reader">
             <EntityTypeMapping TypeName="ValiullinLibraryModel.Reader">
               <MappingFragment StoreEntitySet="Reader">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Adress" ColumnName="Adress" />
-                <ScalarProperty Name="PnoneNumber" ColumnName="PnoneNumber" />
                 <ScalarProperty Name="DateOfBirth" ColumnName="DateOfBirth" />
+                <ScalarProperty Name="PnoneNumber" ColumnName="PnoneNumber" />
+                <ScalarProperty Name="Adress" ColumnName="Adress" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ReturnStatus">
+            <EntityTypeMapping TypeName="ValiullinLibraryModel.ReturnStatus">
+              <MappingFragment StoreEntitySet="ReturnStatus">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="sysdiagrams">
             <EntityTypeMapping TypeName="ValiullinLibraryModel.sysdiagrams">
               <MappingFragment StoreEntitySet="sysdiagrams">
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-                <ScalarProperty Name="version" ColumnName="version" />
                 <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

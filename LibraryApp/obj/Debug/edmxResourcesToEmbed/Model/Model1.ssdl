@@ -35,6 +35,7 @@
     <Property Name="ReaderID" Type="int" />
     <Property Name="BookId" Type="int" />
     <Property Name="EmployeeId" Type="int" />
+    <Property Name="StatusId" Type="int" />
   </EntityType>
   <EntityType Name="Employee">
     <Key>
@@ -67,7 +68,7 @@
       <PropertyRef Name="ID" />
     </Key>
     <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-    <Property Name="Name" Type="nchar" MaxLength="10" />
+    <Property Name="Name" Type="nvarchar" MaxLength="50" />
   </EntityType>
   <EntityType Name="Reader">
     <Key>
@@ -78,6 +79,13 @@
     <Property Name="Adress" Type="nvarchar" MaxLength="50" />
     <Property Name="PnoneNumber" Type="nvarchar" MaxLength="11" />
     <Property Name="DateOfBirth" Type="date" />
+  </EntityType>
+  <EntityType Name="ReturnStatus">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="50" />
   </EntityType>
   <EntityType Name="sysdiagrams">
     <Key>
@@ -173,6 +181,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_BookIssue_ReturnStatus">
+    <End Role="ReturnStatus" Type="Self.ReturnStatus" Multiplicity="0..1" />
+    <End Role="BookIssue" Type="Self.BookIssue" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ReturnStatus">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="BookIssue">
+        <PropertyRef Name="StatusId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_Employee_Position">
     <End Role="Position" Type="Self.Position" Multiplicity="1" />
     <End Role="Employee" Type="Self.Employee" Multiplicity="*" />
@@ -195,6 +215,7 @@
     <EntitySet Name="Position" EntityType="Self.Position" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Publisher" EntityType="Self.Publisher" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Reader" EntityType="Self.Reader" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ReturnStatus" EntityType="Self.ReturnStatus" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
     <AssociationSet Name="FK_Book_Genre" Association="Self.FK_Book_Genre">
       <End Role="Genre" EntitySet="Genre" />
@@ -222,6 +243,10 @@
     </AssociationSet>
     <AssociationSet Name="FK_BookIssue_Reader" Association="Self.FK_BookIssue_Reader">
       <End Role="Reader" EntitySet="Reader" />
+      <End Role="BookIssue" EntitySet="BookIssue" />
+    </AssociationSet>
+    <AssociationSet Name="FK_BookIssue_ReturnStatus" Association="Self.FK_BookIssue_ReturnStatus">
+      <End Role="ReturnStatus" EntitySet="ReturnStatus" />
       <End Role="BookIssue" EntitySet="BookIssue" />
     </AssociationSet>
     <AssociationSet Name="FK_Employee_Position" Association="Self.FK_Employee_Position">

@@ -15,17 +15,26 @@
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
         <StackPanel>
+            <Button Content="Issue Books"
+                        x:Name="IssueBooksBtn"
+                        Click="IssueBooksBtn_Click"/>
+            <Button Content="Delete from Buscket"
+                        x:Name="DeleteFromBuscketBtn"
+                        Click="DeleteFromBuscketBtn_Click"/>
+            <Button Content="Book issue history"
+                    x:Name="HistoryBtn"
+                    Click="HistoryBtn_Click"/>
+            <DatePicker x:Name="ReturnDateDp"/>
+            <ComboBox x:Name="EmployeeCb" 
+                      SelectedItem="{Binding Employee}"
+                      DisplayMemberPath="Name"/>
             <DataGrid x:Name="BuscketDg"
-                      ColumnWidth="*">
+                      ColumnWidth="*"
+                      AutoGenerateColumns="False">
                 <DataGrid.Columns>
                     <DataGridTextColumn Binding="{Binding Name}"/>
                 </DataGrid.Columns>
-                <Button Content="Issue Books"
-                        x:Name="IssueBooksBtn"
-                        Click="IssueBooksBtn_Click"/>
-                <Button Content="Delete from Buscket"
-                        x:Name="DeleteFromBuscketBtn"
-                        Click="DeleteFromBuscketBtn_Click"/>
+                
             </DataGrid>
         </StackPanel>
         <DockPanel Grid.Column="1">
@@ -49,8 +58,8 @@
                     </ItemsPanelTemplate>
                 </ListView.ItemsPanel>
                 <ListView.ItemTemplate >
-                    <DataTemplate>
-                        <StackPanel>
+                    <DataTemplate >
+                        <StackPanel >
                             <TextBlock Text="{Binding Name}"/>
                             <WrapPanel>
                                 <TextBlock Text="Genre:"/>

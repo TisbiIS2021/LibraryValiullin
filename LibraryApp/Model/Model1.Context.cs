@@ -34,6 +34,7 @@ namespace LibraryApp.Model
         public virtual DbSet<Position> Position { get; set; }
         public virtual DbSet<Publisher> Publisher { get; set; }
         public virtual DbSet<Reader> Reader { get; set; }
+        public virtual DbSet<ReturnStatus> ReturnStatus { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
     }
 }
